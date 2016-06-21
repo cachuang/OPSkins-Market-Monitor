@@ -1,9 +1,8 @@
-from queue import Queue
 from sys import argv
 import codecs
 
 import colorama
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 
 from opskin import *
 
@@ -26,8 +25,10 @@ bypassBotDetection()
 print('{0:55} {1:>10} {2:>15} {3:>15} {4:>15} {5:>15}'.format('Name', 'Low', 'Second', 'Min', 'Average', 'Profit'))
 print('-----------------------------------------------------------------------------------------------------------------------------------')
 
-for _item in itemlist:
-    item = OPSkinsItem(_item)
+itemlist.reverse()
+
+while itemlist:
+    item = OPSkinsItem(itemlist.pop())
 
     try:
         itemInfo = item.getItemInfo()
@@ -45,21 +46,26 @@ for _item in itemlist:
             else:
                 second_lowest_price = price[0]
 
-            history_min = min(history_price)
-            history_avg = round(float(sum(history_price) / len(history_price)), 2)
+            # There may not have any sale in history
+            if history_price:
+                history_min = min(history_price)
+                history_avg = round(float(sum(history_price) / len(history_price)), 2)
+            else:
+                history_min = "N/A"
+                history_avg = "N/A"
 
             profit = (second_lowest_price - second_lowest_price * COMMISION) - lowest_price
 
-            print(Fore.BLUE + Style.BRIGHT + '{0:55} '.format(_item) 
-                + Fore.GREEN + '{0:>10} '.format(str(lowest_price) + " USD") 
-                + Style.RESET_ALL + '{0:>15} {1:>15} {2:>15}'.format(str(second_lowest_price) + " USD", str(history_min) + " USD", str(history_avg) + " USD") 
-                + Fore.YELLOW + Style.BRIGHT + '{0:>15}'.format(str(int(profit)) + " USD"))
+            print(Fore.BLUE + Style.BRIGHT + '{0:55} '.format(item.name) 
+                + Fore.GREEN + '{0:>10} '.format(str(lowest_price)) 
+                + Style.RESET_ALL + '{0:>15} {1:>15} {2:>15}'.format(str(second_lowest_price), str(history_min), str(history_avg)) 
+                + Fore.YELLOW + Style.BRIGHT + '{0:>15}'.format(str(int(profit))))
         else:
-            print("Can't find such item: " + _item)
+            print('{0:55} {1:>10} {2:>15} {3:>15} {4:>15} {5:>15}'.format(item.name, "N/A", "N/A", "N/A", "N/A", "N/A"))
 
     except Exception as e:
-        #print(item.html)
-        print(Fore.RED + "\n[Error]: " + str(e) + " (" + _item + ")\n")
+        print(Fore.RED + "\n[Error]: " + str(e) + " (" + item.name + ")\n")
+        itemlist.append(item.name)
         continue
 
 
