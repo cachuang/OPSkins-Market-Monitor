@@ -2,17 +2,19 @@ from time import sleep
 import http.cookiejar
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import requests
 
-REDIRECT_TIME = 7
 TIMEOUT = 5
 
 user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.155 Safari/537.36'
 header = {'User-Agent': user_agent}
 cj = http.cookiejar.CookieJar()
 
-# To bypass CloudFare bot detection, open the real browser to get the cookie 
+# To bypass CloudFare bot detection, open the real browser to get the cookies 
 def bypassBotDetection():
     # Set User-Agent
     webdriver.DesiredCapabilities.PHANTOMJS['phantomjs.page.customHeaders.User-Agent'] = user_agent
@@ -28,7 +30,8 @@ def bypassBotDetection():
     browser.get("https://opskins.com/?loc=shop_search&app=730_2&search_item=%22AK-47%22")
 
     print('# Waiting to redirect...')
-    sleep(REDIRECT_TIME)
+    # wait until <input type="hidden" name="loc" value="shop_search"> show up
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.NAME, "loc")))
 
     print('# Get cookies...')
     cookie = browser.get_cookies()

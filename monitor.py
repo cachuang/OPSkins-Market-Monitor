@@ -61,7 +61,7 @@ while itemlist:
                 + Style.RESET_ALL + '{0:>15} {1:>15} {2:>15}'.format(str(second_lowest_price), str(history_min), str(history_avg)) 
                 + Fore.YELLOW + Style.BRIGHT + '{0:>15}'.format(str(int(profit))))
         else:
-            print('{0:55} {1:>10} {2:>15} {3:>15} {4:>15} {5:>15}'.format(item.name, "N/A", "N/A", "N/A", "N/A", "N/A"))
+            print(Fore.BLACK + '{0:55} {1:>10} {2:>15} {3:>15} {4:>15} {5:>15}'.format(item.name, "N/A", "N/A", "N/A", "N/A", "N/A"))
 
     except Exception as e:
         print(Fore.RED + "\n[Error]: " + str(e) + " (" + item.name + ")\n")
