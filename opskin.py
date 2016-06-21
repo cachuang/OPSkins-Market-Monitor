@@ -52,6 +52,8 @@ class OPSkinsItem():
         
         if "We couldn't find any items that matched your search criteria" in response.text:
             return None
+        elif "Slow down! You're requesting pages too fast" in response.text:
+            raise ValueError("Slow down! You're requesting pages too fast")
         else:
             price = []
             history_price = []
