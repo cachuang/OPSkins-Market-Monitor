@@ -1,11 +1,11 @@
-from selenium import webdriver
 from time import sleep
 import http.cookiejar
 
-import requests
+from selenium import webdriver
 from bs4 import BeautifulSoup
+import requests
 
-REDIRECT_TIME = 10
+REDIRECT_TIME = 7
 TIMEOUT = 5
 
 user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.155 Safari/537.36'
@@ -58,7 +58,7 @@ class OPSkinsItem():
 
             soup = BeautifulSoup(response.text, "html.parser")
             
-            # find item's price
+            # get item's price
             # <div class='item-amount'>$10.00</div>
             for target in soup.find_all('div', class_='item-amount'):
                 # convert the string format price into float, example: $1,000 -> 1000.0
@@ -71,14 +71,16 @@ class OPSkinsItem():
             response = requests.get(history_url, cookies=cj, headers=header, timeout=TIMEOUT)
             soup = BeautifulSoup(response.text, "html.parser")
             
+            # get item's history price
             # <span class="pull-left">$5.81 <small>(Wear: 18.432%)</small></span>
             for target in soup.find_all('span', class_="pull-left"):
-                history_price.append(float(target.contents[0].strip('$')))
+                history_price.append(float(target.contents[0].strip('$').replace(",", "")))
 
             info['price'] = price
             info['history_price'] = history_price
 
             return info
+
 
 
 
